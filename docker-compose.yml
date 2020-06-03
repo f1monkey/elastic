@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  elastic:
+    image: elasticsearch:7.7.0
+    environment:
+      - "discovery.type=single-node"
+    networks:
+        f1monkey:
+            aliases:
+                - f1monkey-elastic
+
+networks:
+  f1monkey:
+    external: true
