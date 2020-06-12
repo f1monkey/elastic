@@ -1,15 +1,38 @@
 version: "3.7"
 
+volumes:
+    redis-data:
+
 services:
-    elastic:
-        image: elasticsearch:7.7.0
+    elasticsearch:
+        image: elasticsearch:7.7.1
         environment:
             - "discovery.type=single-node"
         networks:
+            elk:
             f1monkey:
                 aliases:
-                    - f1monkey-elastic
-
+                    - f1monkey-elk-elastic
+    kibana:
+        image: kibana:7.7.1
+        networks:
+            elk:
+            f1monkey:
+                aliases:
+                    - f1monkey-elk-kibana
+    logstash:
+        build:
+            context: './docker/logstash'
+            args:
+              ELK_VERSION: 7.7.1
+        volumes:
+            - './config/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf'
+        networks:
+            elk:
+            f1monkey:
+                aliases:
+                    - f1monkey-elk-logstash
 networks:
+    elk:
     f1monkey:
         external: true
